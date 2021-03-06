@@ -1,40 +1,28 @@
 const CustomError = require("../extensions/custom-error");
 
 module.exports = function transform(arr) {
-  arr.forEach((item, index, array) => {
-    
-    if (item == '--discard-next') {
+  let newArr = [];
 
-      if (index == array.length)
-        array.splice(index, 1);
-
-      else array.splice(index, 1);
+  for (i = 0; i < arr.length; i++) {
+    if (arr[i] == '--discard-next') {
+      if ((i + 1) == arr.length) break;
+      i++;
     }
-
-    if (item == '--double-next') {
-
-      if (index == array.length)
-        array.splice(index, 1);
-
-      else array.splice(index, 1);
+    else if (arr[i] == '--double-next') {
+      if ((i+1) == arr.length) break;
+      newArr.push(arr[i+1]);    
     }
-
-    if (item == '--discard-prev') {
-
-      if (index == 0)
-        array.splice(0, 1);
-
-      else array.splice(index - 1, 1);
+    else if (arr[i] == '--discard-prev') {
+      if (arr[i-2] == '--discard-next') continue;
+      if (i == 0) continue;
+      newArr.pop();
     }
-
-    if (item == '--double-prev') {
-
-      if (index == 0)
-        array.splice(0, 1);
-        
-      else array.splice(index - 1, 1, array[index - 1]);
+    else if (arr[i] == '--double-prev') {
+      if (i == 0) continue;
+      if (arr[i-2] == '--discard-next') continue;
+      newArr.push(arr[i-1]);
     }
-  });
-
-  return arr;
+    else newArr.push(arr[i]);
+  }
+  return newArr;
 };
